@@ -17,8 +17,7 @@ export default class ShoppingList extends Component {
     }
 
     getListItem(key){
-        let item = ItemDatabase.get(key);
-        item = ItemDatabase.getRandom();
+        const item = ItemDatabase.get(key);
         return  <ListItem title={item.title} price={item.price} />
     }
 }

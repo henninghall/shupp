@@ -3,13 +3,14 @@ import {StyleSheet, View, Platform, ListView} from "react-native";
 import BarcodeScanner from "react-native-barcode-scanner-universal";
 import ShoppingList from "./ShoppingList";
 import PayButton from "./PayButton";
+import ItemDatabase from "../data/ItemDatabase";
 
 export default class StartView extends Component {
 
     constructor(props){
         super(props);
         const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
-        let scannedItems =  [12345];
+        let scannedItems = [ItemDatabase.getRandomKey()];
         this.state = {
             scannedItems: scannedItems,
             dataSource: ds.cloneWithRows(scannedItems),
@@ -30,18 +31,12 @@ export default class StartView extends Component {
         return (
             <View style={styles.container}>
                 <BarcodeScanner
-                    onBarCodeRead={(code) => {
-                        console.log(code);
-                        this.addItemToList(code);
-                    }
-                    }
-                    style={styles.camera}>
+                    onBarCodeRead={(code) => {this.addItemToList(code)}}
+                    style={styles.camera} >
                     {scanArea}
                 </BarcodeScanner>
                 <View style={styles.bottomBar}>
-                    <ShoppingList
-                        dataSource={this.state.dataSource}
-                    />
+                    <ShoppingList dataSource={this.state.dataSource} />
                     <PayButton />
                 </View>
             </View>
@@ -49,15 +44,18 @@ export default class StartView extends Component {
     }
 
     addItemToList(code){
-        const secondsSinceLastAddedItem = (new Date() - this.state.lastItemAddedTime) / 1000;
-        if (secondsSinceLastAddedItem < 2) return;
+        if (this.secondsSinceLastAddedItem() < 2) return;
         console.log(code);
-        const newList = this.state.scannedItems.concat([54322]);
+        const newList = this.state.scannedItems.concat(ItemDatabase.getRandomKey());
         this.setState({
             scannedItems: newList,
             dataSource: this.state.dataSource.cloneWithRows(newList),
             lastItemAddedTime: new Date(),
         });
+    }
+
+    secondsSinceLastAddedItem(){
+        return (new Date() - this.state.lastItemAddedTime) / 1000;
     }
 
 

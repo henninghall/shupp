@@ -15,9 +15,11 @@ export default class ItemDatabase {
     }
 
     static getRandom() {
-        const randomIndex = Math.floor(Math.random() * Object.keys(data).length);
-        const randomKey = Object.keys(data)[randomIndex];
-        return data[randomKey];
+        return data[this.getRandomKey()];
+    }
 
+    static getRandomKey(){
+        const randomIndex = Math.floor(Math.random() * Object.keys(data).length);
+        return Object.keys(data)[randomIndex];
     }
 }
